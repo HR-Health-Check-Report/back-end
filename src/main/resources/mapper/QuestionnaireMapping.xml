@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xxxx.hrhealthcheck.dao.QuestionnaireDao" >
+    <select id="getQuestionnaireCount" resultType="java.lang.Integer">
+        select count(*) from questionnaire
+    </select>
+    <!--关系映射-->
+    <resultMap id="questionnaireMap" type="com.xxxx.hrhealthcheck.bean.Questionnaire">
+        <id property="id" column="questionnaire_id"/>
+        <result property="description" column="questionnaire_description"/>
+        <result property="state" column="state"/>
+        <result column="q1" property="q1"/>
+        <collection property="questions" ofType="com.xxxx.hrhealthcheck.bean.Question">
+            <id column="id" property="id"/>
+            <result column="question" property="question"/>
+            <result column="type" property="type"/>
+            <result column="state" property="state"/>
+            <association property="questionType" javaType="com.xxxx.hrhealthcheck.bean.QuestionType">
+                <id property="id" column="id"/>
+                <result property="description" column="description"/>
+                <result property="state" column="state"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <select id="getQuestionnaire" resultMap="questionnaireMap">
+        select m.questionnaire_id, qu.questionnaire_description, q.*, qt.description
+        from questions q, questionnaire qu, middle m, questiontype qt
+        where q.id = m.question_id and qu.id = m.questionnaire_id and qt.id = q.type and qu.state = true;
+    </select>
+
+    <select id="getAllQuestionnaire" resultMap="questionnaireMap">
+        select m.questionnaire_id, qu.state, qu.completionstatus, qu.questionnaire_description,q.*, qt.*
+        from questions q, questionnaire qu, middle m, questiontype qt
+        where q.id = m.question_id and qu.id = m.questionnaire_id and qt.id = q.type;
+    </select>
+
+    <update id="updateState">
+        update questionnaire set state = #{state} where id=#{id}
+    </update>
+
+    <insert id="addQuestionnaire">
+        insert into questionnaire (description,state,completionstatus)
+            value (#{description}, #{state}, #{completionstatus})
+    </insert>
+    <select id="getQuestionList" resultType="com.xxxx.hrhealthcheck.bean.Question">
+        select distinct q.*from  questions q
+        where q.type = #{groupId} and q.id not in
+        <foreach collection="questionIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>;
+    </select>
+
+
+</mapper>

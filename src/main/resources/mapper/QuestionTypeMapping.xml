@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xxxx.hrhealthcheck.dao.QuestionTypeDao" >
+    <select id="getAllQuestionType" resultType="com.xxxx.hrhealthcheck.bean.QuestionType">
+        select * from questiontype limit #{pageStart}, #{pageSize}
+    </select>
+
+    <select id="getQuestionTypeCount" resultType="java.lang.Integer">
+        select count(*) from questiontype
+    </select>
+
+    <select id="getQuestionTypeDescription" resultType="java.lang.String">
+        select description from questiontype where id = #{id}
+    </select>
+
+    <insert id="addQuestionType">
+        insert into questiontype (description,state)
+        value (#{description}, #{state})
+    </insert>
+
+    <delete id="deleteQuestionType">
+        delete from questiontype where id = #{id}
+    </delete>
+
+
+
+
+
+
+</mapper>

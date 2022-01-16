@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xxxx.hrhealthcheck.dao.ReportDao">
+    <insert id="saveReport" parameterType="com.xxxx.hrhealthcheck.bean.ReportForDatabase">
+        insert into report (report,totalscore,companyName)
+        values (#{report},#{totalScore},#{companyName})
+    </insert>
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xxxx.hrhealthcheck.dao.QuestionDao" >
+    <select id="getAllQuestion" resultMap="questionMap">
+        select
+        q.*,
+        t.id,
+        t.description from questiontype t, questions q
+        <if test="question != null ">
+            where question like #{question}
+        </if>
+        and q.type = t.id
+        limit #{pageStart}, #{pageSize}
+    </select>
+
+    <select id="getQuestionCount" resultType="java.lang.Integer">
+        select count(*) from questions
+        <if test="question != null ">
+            where question like #{question}
+        </if>
+    </select>
+
+    <insert id="addQuestion">
+        insert into questions (question,type,state)
+        value (#{question}, #{type}, #{state})
+    </insert>
+
+    <delete id="deleteQuestion">
+        delete from questions where id = #{id}
+    </delete>
+
+    <update id="updateState">
+        update questions set state = #{state} where id=#{id}
+    </update>
+
+    <update id="editQuestion">
+        update questions set question = #{question} ,type=#{type} where id=#{id}
+    </update>
+
+    <select id="getQuestion" resultType="com.xxxx.hrhealthcheck.bean.Question">
+        select * from questions where id = #{id}
+    </select>
+    <!--关系映射-->
+    <resultMap id="questionMap" type="com.xxxx.hrhealthcheck.bean.Question">
+        <id column="id" property="id"/>
+        <result column="question" property="question"/>
+        <result column="type" property="type"/>
+        <result column="state" property="state"/>
+        <association property="questionType" javaType="com.xxxx.hrhealthcheck.bean.QuestionType">
+            <id property="id" column="id"/>
+            <result property="description" column="description"/>
+            <result property="state" column="state"/>
+        </association>
+    </resultMap>
+
+    <select id="getQuestionInfo" resultMap="questionMap">
+        select
+        q.*,
+        t.id,
+        t.description
+        from questiontype t, questions q where t.id = q.type and q.id = #{id};
+    </select>
+</mapper>
